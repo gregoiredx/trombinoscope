@@ -3,7 +3,9 @@
         <script type="text/javascript" src="mustache.min.js" ></script>
 
        <script id="template" type="text/html">
-           <img src="{{ src }}" title="{{ name }}" width="200">
+            {{#images}}
+                <img src="{{ src }}" title="{{ name }}" width="200">
+            {{/images}}
        </script>
 
     </head>
@@ -18,27 +20,35 @@
         <script>
             var filesInput = document.getElementById("get-files");
             filesInput.onchange = function() {
+                for (i = 0; i < filesInput.files.length; i++) {
+                    var file = filesInput.files[i];
+                    console.log(file);
+                    addImage(file, i, i == filesInput.files.length - 1);
+                }
+            }
+
+            var images = [];
+
+            function addImage(file, i, last) {
+                var reader  = new FileReader();
+                reader.onload = function () {
+                    images[i] = {src : reader.result, name: file.name.replace(/\.[^/.]+$/, "").replace("_", " ")};
+                    if(last){
+                        showImages();
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+
+            function showImages() {
                 var imgContainer = document.getElementById("img_container");
                 while (imgContainer.firstChild) {
                     imgContainer.removeChild(imgContainer.firstChild);
                 }
-                for (i = 0; i < filesInput.files.length; i++) {
-                    var file = filesInput.files[i];
-                    console.log(file);
-                    addImage(imgContainer, file);
-                }
-            }
-
-            function addImage(imgContainer, file) {
-                var reader  = new FileReader();
-                reader.onload = function () {
-
-                    var model = {src : reader.result, name: file.name.replace(/\.[^/.]+$/, "").replace("_", " ")};
-                    var template = document.getElementById("template").innerHTML;
-                    var output = Mustache.render(template, model);
-                    imgContainer.innerHTML = imgContainer.innerHTML + output;
-                }
-                reader.readAsDataURL(file);
+                var model = {"images": images};
+                var template = document.getElementById("template").innerHTML;
+                var output = Mustache.render(template, model);
+                document.body.innerHTML = output;
             }
 
         </script>
