@@ -1,5 +1,11 @@
 <html>
     <head>
+        <script type="text/javascript" src="mustache.min.js" ></script>
+
+       <script id="template" type="text/html">
+           <img src="{{ src }}" title="{{ name }}" width="200">
+       </script>
+
     </head>
     <body>
 
@@ -26,11 +32,11 @@
             function addImage(imgContainer, file) {
                 var reader  = new FileReader();
                 reader.onload = function () {
-                    var img = document.createElement("img");
-                    img.width = 200;
-                    img.src = reader.result;
-                    img.title = file.name.replace(/\.[^/.]+$/, "").replace("_", " ");
-                    imgContainer.appendChild(img);
+
+                    var model = {src : reader.result, name: file.name.replace(/\.[^/.]+$/, "").replace("_", " ")};
+                    var template = document.getElementById("template").innerHTML;
+                    var output = Mustache.render(template, model);
+                    imgContainer.innerHTML = imgContainer.innerHTML + output;
                 }
                 reader.readAsDataURL(file);
             }
