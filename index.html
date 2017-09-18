@@ -1,0 +1,40 @@
+<html>
+    <head>
+    </head>
+    <body>
+
+        <input type="file" name="client-file" id="get-files" multiple  />
+
+        <div id="img_container">
+
+        </div>
+
+        <script>
+            var filesInput = document.getElementById("get-files");
+            filesInput.onchange = function() {
+                var imgContainer = document.getElementById("img_container");
+                while (imgContainer.firstChild) {
+                    imgContainer.removeChild(imgContainer.firstChild);
+                }
+                for (i = 0; i < filesInput.files.length; i++) {
+                    var file = filesInput.files[i];
+                    console.log(file);
+                    addImage(imgContainer, file);
+                }
+            }
+
+            function addImage(imgContainer, file) {
+                var reader  = new FileReader();
+                reader.onloadend = function () {
+                    var img = document.createElement("img");
+                    img.width = 200;
+                    img.src = reader.result;
+                    imgContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+
+        </script>
+
+    </body>
+    <html>
