@@ -3,18 +3,21 @@
 
         <style>
             .photoContainer {
-                width: 200px;
+                width: 220px;
                 position: relative;
                 display: inline-block;
             }
             .photo {
-                max-width: 100%;
-                vertical-align: middle;
-                height: auto;
+                width: 220px;
+                height: 300px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
             }
             .photoLabel {
                 display: inline-block;
-                font-size: 20px;
+                font-size: 30px;
+                font-weight: bold
             }
             .photoLabelContainer {
                 position: absolute;
@@ -36,7 +39,7 @@
             {{#images}}
                 <div class="photoContainer">
                     <span class="photoLabelContainer"><span class="photoLabel">{{ name }}</span></span>
-                    <img class="photo" src="{{ src }}" title="{{ name }}">
+                    <div class="photo" style="background-image: url('{{ src }}')" title="{{ name }}"></div>
                 </div>
             {{/images}}
         </script>
