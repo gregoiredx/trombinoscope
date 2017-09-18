@@ -25,10 +25,11 @@
 
             function addImage(imgContainer, file) {
                 var reader  = new FileReader();
-                reader.onloadend = function () {
+                reader.onload = function () {
                     var img = document.createElement("img");
                     img.width = 200;
                     img.src = reader.result;
+                    img.title = file.name.replace(/\.[^/.]+$/, "").replace("_", " ");
                     imgContainer.appendChild(img);
                 }
                 reader.readAsDataURL(file);
