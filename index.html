@@ -1,12 +1,45 @@
 <html>
     <head>
+
+        <style>
+            .photoContainer {
+                width: 200px;
+                position: relative;
+                display: inline-block;
+            }
+            .photo {
+                max-width: 100%;
+                vertical-align: middle;
+                height: auto;
+            }
+            .photoLabel {
+                display: inline-block;
+                font-size: 20px;
+            }
+            .photoLabelContainer {
+                position: absolute;
+                height: 100%;
+                text-align: center;
+                width: 100%;
+            }
+            .photoLabelContainer:before {
+               content: '';
+               display: inline-block;
+               height: 100%;
+               vertical-align: bottom;
+            }
+        </style>
+
         <script type="text/javascript" src="mustache.min.js" ></script>
 
-       <script id="template" type="text/html">
+        <script id="template" type="text/html">
             {{#images}}
-                <img src="{{ src }}" title="{{ name }}" width="200">
+                <div class="photoContainer">
+                    <span class="photoLabelContainer"><span class="photoLabel">{{ name }}</span></span>
+                    <img class="photo" src="{{ src }}" title="{{ name }}">
+                </div>
             {{/images}}
-       </script>
+        </script>
 
     </head>
     <body>
