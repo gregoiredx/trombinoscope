@@ -49,10 +49,6 @@
 
         <input type="file" name="client-file" id="get-files" multiple  />
 
-        <div id="img_container">
-
-        </div>
-
         <script>
 
             var images = [];
@@ -74,14 +70,11 @@
                         addImage(++i, nbFiles);
                     }
                 }
+                document.body.innerHTML = "Loading file " + (i+1) + "/" + nbFiles;
                 reader.readAsDataURL(file);
             }
 
             function showImages() {
-                var imgContainer = document.getElementById("img_container");
-                while (imgContainer.firstChild) {
-                    imgContainer.removeChild(imgContainer.firstChild);
-                }
                 var model = {"images": images};
                 var template = document.getElementById("template").innerHTML;
                 var output = Mustache.render(template, model);
