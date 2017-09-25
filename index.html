@@ -48,6 +48,7 @@
     <body>
 
         <input type="file" name="client-file" id="get-files" multiple  />
+        <progress id="progress" value="" max="" style="display: none" />
 
         <script>
 
@@ -55,6 +56,8 @@
 
             var filesInput = document.getElementById("get-files");
             filesInput.onchange = function() {
+                document.getElementById("progress").max = filesInput.files.length;
+                document.getElementById("progress").style = "display: block";
                 addImage(0, filesInput.files.length);
             }
 
@@ -70,7 +73,7 @@
                         addImage(++i, nbFiles);
                     }
                 }
-                document.body.innerHTML = "Loading file " + (i+1) + "/" + nbFiles;
+                document.getElementById("progress").value = i + 1;
                 reader.readAsDataURL(file);
             }
 
