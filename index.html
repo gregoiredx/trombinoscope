@@ -54,23 +54,24 @@
         </div>
 
         <script>
-            var filesInput = document.getElementById("get-files");
-            filesInput.onchange = function() {
-                for (i = 0; i < filesInput.files.length; i++) {
-                    var file = filesInput.files[i];
-                    console.log(file);
-                    addImage(file, i, i == filesInput.files.length - 1);
-                }
-            }
 
             var images = [];
 
-            function addImage(file, i, last) {
+            var filesInput = document.getElementById("get-files");
+            filesInput.onchange = function() {
+                addImage(0, filesInput.files.length);
+            }
+
+
+            function addImage(i, nbFiles) {
+                var file = filesInput.files[i];
                 var reader  = new FileReader();
                 reader.onload = function () {
                     images[i] = {src : reader.result, name: file.name.replace(/\.[^/.]+$/, "").replace("_", " ")};
-                    if(last){
+                    if(i == nbFiles - 1){
                         showImages();
+                    }else {
+                        addImage(++i, nbFiles);
                     }
                 }
                 reader.readAsDataURL(file);
