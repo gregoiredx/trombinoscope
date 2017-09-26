@@ -1,6 +1,8 @@
 <html>
     <head>
 
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
         <style>
             .photoContainer {
                 width: 220px;
@@ -52,32 +54,32 @@
 
         <script>
 
-            var images = [];
+            FileList.prototype.map = Array.prototype.map;
+            var progress = document.getElementById("progress");
 
-            var filesInput = document.getElementById("get-files");
-            filesInput.onchange = function() {
-                document.getElementById("progress").max = filesInput.files.length;
-                document.getElementById("progress").style = "display: block";
-                addImage(0, filesInput.files.length);
+            document.getElementById("get-files").onchange = (event) => {
+                progress.max = event.target.files.length;
+                progress.style = "display: block";
+                Promise.all(event.target.files.map(readImage)).then(showImages).catch(alert);
             }
 
-
-            function addImage(i, nbFiles) {
-                var file = filesInput.files[i];
-                var reader  = new FileReader();
-                reader.onload = function () {
-                    images[i] = {src : reader.result, name: file.name.replace(/\.[^/.]+$/, "").replace("_", " ")};
-                    if(i == nbFiles - 1){
-                        showImages();
-                    }else {
-                        addImage(++i, nbFiles);
-                    }
-                }
-                document.getElementById("progress").value = i + 1;
-                reader.readAsDataURL(file);
+            function readImage(file) {
+                return new Promise((resolve, reject) => {
+                    var reader  = new FileReader();
+                    reader.onload = () => {
+                        progress.value += 1;
+                        resolve({src : reader.result, name: removeExtension(file.name)});
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
             }
 
-            function showImages() {
+            function removeExtension(fileName) {
+                return fileName.replace(/\.[^/.]+$/, "").replace("_", " ");
+            }
+
+            function showImages(images){
                 var model = {"images": images};
                 var template = document.getElementById("template").innerHTML;
                 var output = Mustache.render(template, model);
