@@ -1,93 +1,102 @@
 <html>
-    <head>
 
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<head>
 
-        <style>
-            .photoContainer {
-                width: 220px;
-                position: relative;
-                display: inline-block;
-            }
-            .photo {
-                width: 220px;
-                height: 300px;
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-            .photoLabel {
-                display: inline-block;
-                font-size: 25px;
-                font-weight: bold;
-                background: rgba(255, 255, 255, .3);
-            }
-            .photoLabelContainer {
-                position: absolute;
-                height: 100%;
-                text-align: center;
-                width: 100%;
-            }
-            .photoLabelContainer:before {
-               content: '';
-               display: inline-block;
-               height: 100%;
-               vertical-align: bottom;
-            }
-        </style>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 
-        <script type="text/javascript" src="mustache.min.js" ></script>
+    <style>
+        .photoContainer {
+            width: 220px;
+            position: relative;
+            display: inline-block;
+        }
 
-        <script id="template" type="text/html">
-            {{#images}}
-                <div class="photoContainer">
-                    <span class="photoLabelContainer"><span class="photoLabel">{{ name }}</span></span>
-                    <div class="photo" style="background-image: url('{{ src }}')" title="{{ name }}"></div>
-                </div>
-            {{/images}}
-        </script>
+        .photo {
+            width: 220px;
+            height: 300px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
 
-    </head>
-    <body>
+        .photoLabel {
+            display: inline-block;
+            font-size: 25px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, .3);
+        }
 
-        <input type="file" name="client-file" id="get-files" multiple  />
-        <progress id="progress" value="" max="" style="display: none" />
+        .photoLabelContainer {
+            position: absolute;
+            height: 100%;
+            text-align: center;
+            width: 100%;
+        }
 
-        <script>
+        .photoLabelContainer:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: bottom;
+        }
+    </style>
 
-            FileList.prototype.map = Array.prototype.map;
-            var progress = document.getElementById("progress");
+    <script type="text/javascript" src="mustache.min.js"></script>
 
-            document.getElementById("get-files").onchange = (event) => {
-                progress.max = event.target.files.length;
-                progress.style = "display: block";
-                Promise.all(event.target.files.map(readImage)).then(showImages).catch(alert);
-            }
+    <script id="template" type="text/html">
+        {{#images}}
+        <div class="photoContainer">
+            <span class="photoLabelContainer"><span class="photoLabel">{{ name }}</span></span>
+            <div class="photo" style="background-image: url('{{ src }}')" title="{{ name }}"></div>
+        </div>
+        {{/images}}
+    </script>
 
-            function readImage(file) {
-                return new Promise((resolve, reject) => {
-                    var reader  = new FileReader();
-                    reader.onload = () => {
-                        progress.value += 1;
-                        resolve({src : reader.result, name: removeExtension(file.name)});
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-            }
+</head>
 
-            function removeExtension(fileName) {
-                return fileName.replace(/\.[^/.]+$/, "").replace("_", " ");
-            }
+<body>
 
-            function showImages(images){
-                var model = {"images": images};
-                var template = document.getElementById("template").innerHTML;
-                var output = Mustache.render(template, model);
-                document.body.innerHTML = output;
-            }
+    <input type="file" name="client-file" id="get-files" multiple />
+    <progress id="progress" value="" max="" style="display: none" />
 
-        </script>
+    <script>
+        FileList.prototype.map = Array.prototype.map;
+        var progress = document.getElementById("progress");
 
-    </body>
-    <html>
+        document.getElementById("get-files").onchange = (event) => {
+            progress.max = event.target.files.length;
+            progress.style = "display: block";
+            Promise.all(event.target.files.map(readImage)).then(showImages).catch(alert);
+        }
+
+        function readImage(file) {
+            return new Promise((resolve, reject) => {
+                var reader = new FileReader();
+                reader.onload = () => {
+                    progress.value += 1;
+                    resolve({
+                        src: reader.result,
+                        name: removeExtension(file.name)
+                    });
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeExtension(fileName) {
+            return fileName.replace(/\.[^/.]+$/, "").replace("_", " ");
+        }
+
+        function showImages(images) {
+            var model = {
+                "images": images
+            };
+            var template = document.getElementById("template").innerHTML;
+            var output = Mustache.render(template, model);
+            document.body.innerHTML = output;
+        }
+    </script>
+
+</body>
+<html>
